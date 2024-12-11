@@ -1,16 +1,16 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::get('/test' ,
+Route::get('/test',
     function (Request $request) {
         return response()->json([
             'message' => 'Hello World!',
@@ -19,18 +19,26 @@ Route::get('/test' ,
 );
 
 Route::post('/sanctum/token', function (Request $request) {
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-        'deviceName' => 'required',
-    ]);
-    $user = User::where('email', $request->email)->first();
-    if (!$user || !Hash::check($request->password, $user->password)) {
-        throw ValidationException::withMessages([
-            'email' => ['The provided credentials are incorrect.'],
+    try {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+            'deviceName' => 'required',
         ]);
+
+        $user = User::where('email', $request->email)->first();
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            throw ValidationException::withMessages([
+                'email' => ['The provided credentials are incorrect.'],
+            ]);
+        }
+
+        return response()->json([
+            'token' => $user->createToken($request->deviceName)->plainTextToken,
+        ]);
+    } catch (ValidationException $e) {
+        return response()->json(['error' => $e->getMessage()], 422);
     }
-    return $user->createToken($request->deviceName)->plainTextToken;
 });
 
 Route::post("/register", function (Request $request) {
@@ -40,6 +48,14 @@ Route::post("/register", function (Request $request) {
         'password' => 'required',
         'confirmPassword' => 'required|same:password', // 'password_confirmation' => 'required|same:password
         'deviceName' => 'required',
+        'weight' => 'required',
+        'height' => 'required',
+        'age' => 'required|>=18 ',
+        'goal' => 'required|in:lose,maintain,gain',
+        'goal_weight' => 'required',
+        'activity_level' => 'required|in:sedentary,lightly active,moderately active,very active,super active',
+        'daily_calories_goal' => 'required',
+        'daily_steps_goal' => 'required',
     ]);
 
     $user = User::create([
