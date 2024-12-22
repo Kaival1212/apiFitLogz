@@ -10,6 +10,8 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+Route::get('/weights', [\App\Http\Controllers\UserWeightController::class, 'index'])->middleware('auth:sanctum');
+
 Route::get('/test',
     function (Request $request) {
         return response()->json([
@@ -62,7 +64,19 @@ Route::post("/register", function (Request $request) {
         'name' => $request->name,
         'email' => $request->email,
         'password' => Hash::make($request->password),
+        'height' => $request->height,
+        'age' => $request->age,
+        'goal' => $request->goal,
+        'goal_weight' => $request->goal_weight,
+        'activity_level' => $request->activity_level,
+        'daily_calories_goal' => $request->daily_calories_goal,
+        'daily_steps_goal' => $request->daily_steps_goal,
     ]);
+
+    $user->userWeights()->create([
+        'weight' => $request->weight,
+    ]);
+
     return $user->createToken($request->deviceName)->plainTextToken;
 });
 

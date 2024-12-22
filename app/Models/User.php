@@ -46,4 +46,8 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    function userWeights(){
+        return $this->hasMany(UserWeight::class);
+    }
 }
