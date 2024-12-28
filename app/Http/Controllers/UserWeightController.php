@@ -23,5 +23,15 @@ class UserWeightController extends Controller
             'weight' => 'required|numeric',
             'unit' => 'required|in:kg,lb',
         ]);
+
+        $user = auth()->user();
+        $user->userWeights()->create([
+            'weight' => $request->weight,
+            'unit' => $request->unit,
+        ]);
+
+        return response()->json([
+            'message' => 'Weight added successfully'
+        ]);
     }
 }

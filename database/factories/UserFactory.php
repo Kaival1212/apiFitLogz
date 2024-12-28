@@ -29,11 +29,13 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'height' => fake()->numberBetween(60, 80),
+            'weight' => fake()->numberBetween(100, 300),
             'age' => fake()->numberBetween(18, 80),
             'goal' => fake()->randomElement(['lose', 'maintain', 'gain']),
             'goal_weight' => fake()->numberBetween(100, 300),
             'activity_level' => fake()->randomElement(['sedentary', 'lightly active', 'moderately active', 'very active', 'super active']),
             'daily_calories_goal' => fake()->numberBetween(1000, 5000),
+            'daily_calories_limit' => fake()->numberBetween(1000, 5000),
             'daily_steps_goal' => fake()->numberBetween(1000, 20000),
             'remember_token' => Str::random(10),
         ];

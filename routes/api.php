@@ -11,14 +11,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::get('/weights', [\App\Http\Controllers\UserWeightController::class, 'index'])->middleware('auth:sanctum');
-
-Route::get('/test',
-    function (Request $request) {
-        return response()->json([
-            'message' => 'Hello World!',
-        ]);
-    }
-);
+Route::post('/weights', [\App\Http\Controllers\UserWeightController::class, 'store'])->middleware('auth:sanctum');
 
 Route::post('/sanctum/token', function (Request $request) {
     try {
@@ -58,6 +51,7 @@ Route::post("/register", function (Request $request) {
         'activity_level' => 'required|in:sedentary,lightly active,moderately active,very active,super active',
         'daily_calories_goal' => 'required',
         'daily_steps_goal' => 'required',
+        'daily_calories_limit' => 'required',
     ]);
 
     $user = User::create([
@@ -65,6 +59,7 @@ Route::post("/register", function (Request $request) {
         'email' => $request->email,
         'password' => Hash::make($request->password),
         'height' => $request->height,
+        'weight' => $request->weight,
         'age' => $request->age,
         'goal' => $request->goal,
         'goal_weight' => $request->goal_weight,
