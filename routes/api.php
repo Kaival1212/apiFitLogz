@@ -107,10 +107,10 @@ Route::get('/openfoodfacts/product/{id}', function (String $id) {
         'carbohydrates_unit' => $product["nutriments"]["carbohydrates_unit"] ?? null,
 
         'energy' => $product["nutriments"]["energy"] ?? null,
-        'energy-kcal' => $product["nutriments"]["energy-kcal"] ?? null,
-        'energy-kcal_100g' => $product["nutriments"]["energy-kcal_100g"] ?? null,
-        'energy-kcal_serving' => $product["nutriments"]["energy-kcal_serving"] ?? null,
-        'energy-kcal_unit' => $product["nutriments"]["energy-kcal_unit"] ?? null,
+        'energy_kcal' => $product["nutriments"]["energy-kcal"] ?? null,
+        'energy_kcal_100g' => $product["nutriments"]["energy-kcal_100g"] ?? null,
+        'energy_kcal_serving' => $product["nutriments"]["energy-kcal_serving"] ?? null,
+        'energy_kcal_unit' => $product["nutriments"]["energy-kcal_unit"] ?? null,
 
         'fat' => $product["nutriments"]["fat"] ?? null,
         'fat_100g' => $product["nutriments"]["fat_100g"] ?? null,
