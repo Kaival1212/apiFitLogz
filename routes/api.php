@@ -95,7 +95,7 @@ Route::get('/openfoodfacts/product/{id}', function (String $id) {
     $product = $data["product"];
 
     if ($data["status"] === "failure") {
-        return response()->json(['error' => 'Product not found'], 404);
+        return response()->json(['error' => 'Product not found']);
     }
 
     $response_product = [
