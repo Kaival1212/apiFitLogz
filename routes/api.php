@@ -95,10 +95,10 @@ Route::get('/openfoodfacts/product/{id}', function (String $id) {
     $product = $data["product"];
     $response_product = [
         'id' => $product["_id"],
-        'name' => $product["product_name"] ?? null,
-        'name_en' => $product["product_name_en"] ?? null,
-        'quantity' => $product["product_quantity"],
-        'quantity_unit' => $product["product_quantity_unit"],
+        'name' => $product["product_name"],
+        'name_en' => $product["product_name_en"],
+        'quantity' => $product["product_quantity"] ?? null,
+        'quantity_unit' => $product["product_quantity_unit"] , null,
         'image_front_small_url' => $product["image_front_small_url"] ?? null,
 
         'carbohydrates' => $product["nutriments"]["carbohydrates"] ?? null,
