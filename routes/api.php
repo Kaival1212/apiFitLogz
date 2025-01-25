@@ -93,12 +93,13 @@ Route::get('/openfoodfacts/product/{id}', function (String $id) {
     $jsondata = $response->getBody()->getContents();
     $data = json_decode($jsondata,true);
     $product = $data["product"];
+
     $response_product = [
         'id' => $product["_id"],
         'name' => $product["product_name"],
         'name_en' => $product["product_name_en"],
         'quantity' => $product["product_quantity"] ?? null,
-        'quantity_unit' => $product["product_quantity_unit"] , null,
+        'quantity_unit' => $product["product_quantity_unit"] ?? null,
         'image_front_small_url' => $product["image_front_small_url"] ?? null,
 
         'carbohydrates' => $product["nutriments"]["carbohydrates"] ?? null,
@@ -127,6 +128,8 @@ Route::get('/openfoodfacts/product/{id}', function (String $id) {
         'sugar_serving' => $product["nutriments"]["sugars_serving"] ?? null,
         'sugar_unit' => $product["nutriments"]["sugars_unit"] ?? null,
     ];
+
+    info($response_product);
 
     return response()->json($response_product);
 
