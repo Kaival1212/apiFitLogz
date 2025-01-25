@@ -94,6 +94,10 @@ Route::get('/openfoodfacts/product/{id}', function (String $id) {
     $data = json_decode($jsondata,true);
     $product = $data["product"];
 
+    if ($product["status"] == "failure") {
+        return response()->json(['error' => 'Product not found'], 404);
+    }
+
     $response_product = [
         'id' => $product["_id"],
         'name' => $product["product_name"],
@@ -129,8 +133,10 @@ Route::get('/openfoodfacts/product/{id}', function (String $id) {
         'sugar_unit' => $product["nutriments"]["sugars_unit"] ?? null,
     ];
 
-    info($response_product);
-
+    try{
     return response()->json($response_product);
+    } catch (Exception $e) {
+        return response()->json(['error' => 'API Error'], 404);
+    }
 
 });
