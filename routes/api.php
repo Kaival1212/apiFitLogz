@@ -38,7 +38,7 @@ Route::post('/sanctum/token', function (Request $request) {
     }
 });
 
-Route::post("/register", function (Request $request) {
+Route::post("/register",    function (Request $request) {
     $request->validate([
         'name' => 'required',
         'email' => 'required|email',

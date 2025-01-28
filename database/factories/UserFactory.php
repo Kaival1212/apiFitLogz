@@ -36,6 +36,10 @@ class UserFactory extends Factory
             'activity_level' => fake()->randomElement(['sedentary', 'lightly active', 'moderately active', 'very active', 'super active']),
             'daily_calories_goal' => fake()->numberBetween(1000, 5000),
             'daily_calories_limit' => fake()->numberBetween(1000, 5000),
+            'daily_protein_limit' => fake()->numberBetween(500, 100),
+            'daily_carbs_limit' => fake()->numberBetween(100, 500),
+            'daily_fat_limit' => fake()->numberBetween(100, 500),
+            'daily_sugar_limit' => fake()->numberBetween(10, 50),
             'daily_steps_goal' => fake()->numberBetween(1000, 20000),
             'remember_token' => Str::random(10),
         ];

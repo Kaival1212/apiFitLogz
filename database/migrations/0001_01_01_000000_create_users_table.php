@@ -23,6 +23,10 @@ return new class extends Migration
             $table->string('activity_level');
             $table->string('daily_calories_goal');
             $table->string('daily_calories_limit');
+            $table->string('daily_protein_limit');
+            $table->string('daily_carbs_limit');
+            $table->string('daily_fat_limit');
+            $table->string('daily_sugar_limit');
             $table->string('daily_steps_goal');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
