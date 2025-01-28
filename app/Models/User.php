@@ -51,7 +51,7 @@ class User extends Authenticatable
         return $this->hasMany(UserWeight::class);
     }
 
-    function userFoods(){
+    function foods(){
         return $this->hasMany(UserFood::class);
     }
 }

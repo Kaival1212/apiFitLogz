@@ -14,14 +14,21 @@ class OpenFoodFactsProductController extends Controller
         $client = new Client();
         $url = "https://api.openfoodfacts.org/api/v3/product/$id.json";
 
-        try{
-            $response = $client->get($url);}
+        try {
+            $response = $client->get($url);
+            $jsondata = $response->getBody()->getContents();
+            $data = json_decode($jsondata, true);
+            $product = $data["product"];
+
+            if ($product['nutriments']["carbohydrates_100g"] == null) {
+                info("Carbohydrates not found");
+                throw new Exception("Carbohydrates not found");
+            }
+        }
+
         catch (Exception $e) {
             return response()->json(['error' => 'Product not found'], 404);
         }
-        $jsondata = $response->getBody()->getContents();
-        $data = json_decode($jsondata,true);
-        $product = $data["product"];
 
         try{
             $response_product = $this->formatProductResponse($product);
@@ -34,8 +41,8 @@ class OpenFoodFactsProductController extends Controller
         private function formatProductResponse(array $product): array
         {
             $nutriments = $product['nutriments'] ?? [];
-            $quantity = $product['product_quantity'] ?? 1; // Default to 1 if quantity is not provided
-            $quantityUnit = $product['product_quantity_unit'] ?? 'g'; // Default to grams if unit is not provided
+            $quantity = $product['product_quantity'] ?? 1;
+            $quantityUnit = $product['product_quantity_unit'] ?? 'g';
 
             // Helper function to calculate per serving value if not provided
             $calculatePerServing = function ($per100g, $quantity) {

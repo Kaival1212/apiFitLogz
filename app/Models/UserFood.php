@@ -16,6 +16,7 @@ class UserFood extends Model
         'protein',
         'carbs',
         'fat',
+        'barcode'
     ];
 
     function user(){

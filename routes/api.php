@@ -83,3 +83,7 @@ Route::middleware(['auth:sanctum'])->post('/logout', function (Request $request)
 });
 
 Route::get('/openfoodfacts/product/{id}',[\App\Http\Controllers\OpenFoodFactsProductController::class , 'getProduct']);
+
+Route::middleware(['auth:sanctum'])->group(function (){
+    Route::post('/food', [\App\Http\Controllers\UserFoodController::class, 'store']);
+});
