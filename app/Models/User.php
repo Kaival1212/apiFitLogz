@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -45,6 +46,26 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    function getTodaysFoods(){
+        return $this->foods->where('created_at', '>=', Carbon::today());
+    }
+
+    function getTodaysCalories(){
+        return $this->getTodaysFoods()->sum('calories');
+    }
+
+    function getTodaysProtein(){
+        return $this->getTodaysFoods()->sum('protein');
+    }
+
+    function getTodaysCarbs(){
+        return $this->getTodaysFoods()->sum('carbs');
+    }
+
+    function getTodaysFat(){
+        return $this->getTodaysFoods()->sum('fat');
     }
 
     function userWeights(){

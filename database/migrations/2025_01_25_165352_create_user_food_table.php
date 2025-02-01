@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name');
-            $table->string('barcode');
+            $table->string('barcode')->nullable();
             $table->integer('calories');
             $table->integer('protein');
             $table->integer('carbs');

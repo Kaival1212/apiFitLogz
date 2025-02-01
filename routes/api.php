@@ -86,4 +86,5 @@ Route::get('/openfoodfacts/product/{id}',[\App\Http\Controllers\OpenFoodFactsPro
 
 Route::middleware(['auth:sanctum'])->group(function (){
     Route::post('/food', [\App\Http\Controllers\UserFoodController::class, 'store']);
+    Route::get('/food', [\App\Http\Controllers\UserFoodController::class, 'index']);
 });

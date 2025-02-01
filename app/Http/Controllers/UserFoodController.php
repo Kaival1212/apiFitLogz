@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class UserFoodController extends Controller
@@ -16,7 +17,6 @@ class UserFoodController extends Controller
         try{
         $request->validate([
             'name' => 'required',
-            'barcode' => 'required',
             'calories' => 'required',
             'protein' => 'required',
             'carbs' => 'required',
@@ -28,19 +28,29 @@ class UserFoodController extends Controller
             return response()->json(['error' => $e], 400);
         }
 
-        $foofd = $user->foods()->create([
+        $foof = $user->foods()->create([
             'name' => $request->name,
-            'barcode' => $request->barcode,
             'calories' => $request->calories,
             'protein' => $request->protein,
             'carbs' => $request->carbs,
             'fat' => $request->fat
         ]);
 
-        info($foofd);
+        info($foof);
 
         return response()->json(['message' => 'Food added successfully']);
 
+    }
+
+    public function index(Request $request){
+        $user = $request->user();
+        //dd($user->getTodaysFoods() , $user->getTodaysCalories() , $user->getTodaysProtein() , $user->getTodaysCarbs() , $user->getTodaysFat());
+        $foods = $user->getTodaysFoods();
+
+        if ($foods->count() == 0){
+            return response()->json(['message' => 'No foods found for today']);
+        }
+        return response()->json($user->getTodaysFoods());
     }
 
 }
