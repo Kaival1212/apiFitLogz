@@ -50,4 +50,16 @@ class UserFoodController extends Controller
             ]);
     }
 
+    public function dailyNutrition(Request $request){
+
+        return response()->json(
+            [
+                "calories" => $request->user()->getTodaysCalories(),
+                "protein" => $request->user()->getTodaysProtein(),
+                "carbs" => $request->user()->getTodaysCarbs(),
+                "fat" => $request->user()->getTodaysFat(),
+            ]
+        );
+
+    }
 }
