@@ -19,11 +19,6 @@ class OpenFoodFactsProductController extends Controller
             $jsondata = $response->getBody()->getContents();
             $data = json_decode($jsondata, true);
             $product = $data["product"];
-
-            if ($product['nutriments']["carbohydrates_100g"] == null) {
-                info("Carbohydrates not found");
-                throw new Exception("Carbohydrates not found");
-            }
         }
 
         catch (Exception $e) {
@@ -56,6 +51,7 @@ class OpenFoodFactsProductController extends Controller
                 'quantity' => $quantity,
                 'quantity_unit' => $quantityUnit,
                 'image_front_small_url' => $product['image_front_small_url'] ?? null,
+                'nutrition_data_per' => $product['nutrition_data_per'],
 
                 'carbohydrates_100g' => $nutriments['carbohydrates_100g'] ?? null,
                 'carbohydrates_serving' => $nutriments['carbohydrates_serving'] ?? $calculatePerServing($nutriments['carbohydrates_100g'] ?? null, $quantity),
