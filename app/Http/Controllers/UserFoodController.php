@@ -50,7 +50,10 @@ class UserFoodController extends Controller
         if ($foods->count() == 0){
             return response()->json(['message' => 'No foods found for today']);
         }
-        return response()->json($user->getTodaysFoods());
+        return response()->json(
+            [
+                "data" => $user->getTodaysFoods()
+            ]);
     }
 
 }
