@@ -36,19 +36,20 @@ class UserFoodController extends Controller
 
     }
 
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         $user = $request->user();
-        //dd($user->getTodaysFoods() , $user->getTodaysCalories() , $user->getTodaysProtein() , $user->getTodaysCarbs() , $user->getTodaysFat());
-        $foods = $user->getTodaysFoods();
+        $foods = $user->getTodaysFoods()->values(); // Reset array keys
 
-        if ($foods->count() == 0){
+        if ($foods->isEmpty()) {
             return response()->json(['message' => 'No foods found for today']);
         }
-        return response()->json(
-            [
-                "data" => $user->getTodaysFoods()
-            ]);
+
+        return response()->json([
+            "data" => $foods
+        ]);
     }
+
 
     public function dailyNutrition(Request $request){
 
