@@ -11,9 +11,6 @@ class UserFoodController extends Controller
 
         $user = $request->user();
 
-        info($user);
-        info($request);
-        info("name".$request->barcode);
         try{
         $request->validate([
             'name' => 'required',
@@ -24,7 +21,6 @@ class UserFoodController extends Controller
         ]);
         }
         catch (\Exception $e){
-            info($e);
             return response()->json(['error' => $e], 400);
         }
 
@@ -35,8 +31,6 @@ class UserFoodController extends Controller
             'carbs' => $request->carbs,
             'fat' => $request->fat
         ]);
-
-        info($foof);
 
         return response()->json(['message' => 'Food added successfully']);
 

@@ -49,7 +49,7 @@ class User extends Authenticatable
     }
 
     function getTodaysFoods(){
-        return $this->foods->where('created_at', '>=', Carbon::today());
+        return $this->foods->where('created_at', '>=', Carbon::today())->sortByDesc('created_at');
     }
 
     function getTodaysCalories(){
