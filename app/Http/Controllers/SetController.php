@@ -11,8 +11,7 @@ class SetController extends Controller
     /** List all sets for current user */
     public function index(Request $request)
     {
-        $query = Set::with('exercise')
-                    ->where('user_id', $request->user()->id);
+        $query = Set::where('user_id', $request->user()->id);
 
         if ($request->filled('exercise_id')) {
             $query->where('exercise_id', $request->exercise_id);
