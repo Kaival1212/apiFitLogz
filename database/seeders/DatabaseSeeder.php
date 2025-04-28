@@ -20,9 +20,5 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
-
-        UserWeight::factory(20)->create([
-            'user_id' => $user->id,
-        ]);
     }
 }
