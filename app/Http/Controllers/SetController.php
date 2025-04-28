@@ -41,7 +41,7 @@ class SetController extends Controller
     /** Show a single set */
     public function show(Set $set)
     {
-        return $set->load('exercise');
+        return $set;
     }
 
     /** Update a set */
