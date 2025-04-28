@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
 use GuzzleHttp\Client;
+use App\Http\Controllers\ExerciseController;
+use App\Http\Controllers\SetController;
 
 
 Route::get('/user', function (Request $request) {
@@ -85,7 +87,23 @@ Route::middleware(['auth:sanctum'])->post('/logout', function (Request $request)
 Route::get('/openfoodfacts/product/{id}',[\App\Http\Controllers\OpenFoodFactsProductController::class , 'getProduct']);
 
 Route::middleware(['auth:sanctum'])->group(function (){
+
     Route::post('/food', [\App\Http\Controllers\UserFoodController::class, 'store']);
     Route::get('/food', [\App\Http\Controllers\UserFoodController::class, 'index']);
     Route::get('/dailynutrition', [\App\Http\Controllers\UserFoodController::class, 'dailyNutrition']);
+
+
+    Route::apiResource('exercises', ExerciseController::class)
+         ->except(['create', 'edit']);
+
+    Route::get('sets/recommendation', [SetController::class, 'recommendation']);
+
+
+    Route::apiResource('sets', SetController::class)
+         ->except(['create', 'edit'])
+         ->whereNumber('set');
+
+
+
+
 });

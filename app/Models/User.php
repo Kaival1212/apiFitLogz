@@ -75,4 +75,12 @@ class User extends Authenticatable
     function foods(){
         return $this->hasMany(UserFood::class);
     }
+
+    function exercises(){
+        return $this->hasMany(Exercise::class);
+    }
+
+    function sets(){
+        return $this->hasMany(Set::class);
+    }
 }
