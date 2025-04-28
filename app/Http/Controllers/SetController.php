@@ -9,13 +9,18 @@ use Illuminate\Support\Facades\Auth;
 class SetController extends Controller
 {
     /** List all sets for current user */
-    public function index()
+    public function index(Request $request)
     {
-        return Set::with('exercise')
-                  ->where('user_id', Auth::id())
-                  ->latest()
-                  ->get();
+        $query = Set::with('exercise')
+                    ->where('user_id', $request->user()->id);
+
+        if ($request->filled('exercise_id')) {
+            $query->where('exercise_id', $request->exercise_id);
+        }
+
+        return $query->latest()->get();
     }
+
 
     /** Store a new set */
     public function store(Request $request)
