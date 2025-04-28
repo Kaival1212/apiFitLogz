@@ -103,6 +103,7 @@ Route::middleware(['auth:sanctum'])->group(function (){
          ->except(['create', 'edit'])
          ->whereNumber('set');
 
+    Route::post('/user-weights', [\App\Http\Controllers\UserWeightController::class, 'store']);
 
 
 

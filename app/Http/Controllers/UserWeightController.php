@@ -20,18 +20,16 @@ class UserWeightController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'weight' => 'required|numeric',
-            'unit' => 'required|in:kg,lb',
+            'weight' => 'required|numeric|min:1',
+            'unit'   => 'sometimes|in:kg,lb',
         ]);
 
-        $user = auth()->user();
-        $user->userWeights()->create([
+        // user() comes from Sanctum / auth:sanctum middleware
+        $weight = $request->user()->userWeights()->create([
             'weight' => $request->weight,
-            'unit' => $request->unit,
+            'unit'   => $request->unit ?? 'kg',
         ]);
 
-        return response()->json([
-            'message' => 'Weight added successfully'
-        ]);
+        return response()->json($weight, 201);
     }
 }
