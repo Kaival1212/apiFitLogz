@@ -17,7 +17,7 @@ return new class extends Migration
             ->constrained()
             ->cascadeOnDelete();
             $table->foreignId('exercise_id')->constrained()->onDelete('cascade');
-            $table->decimal('weight', 5, 2);              // kg (allows 0.01 precision)
+            $table->decimal('weight', 5, 2);
             $table->unsignedSmallInteger('reps');
             $table->enum('intensity', ['Easy', 'Moderate', 'Hard', 'Failure']);
             $table->timestamps();

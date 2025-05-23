@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 class SetController extends Controller
 {
-    /** List all sets for current user */
     public function index(Request $request)
     {
         $query = Set::where('user_id', $request->user()->id);
@@ -21,7 +20,6 @@ class SetController extends Controller
     }
 
 
-    /** Store a new set */
     public function store(Request $request)
     {
         $request->validate([
@@ -42,13 +40,11 @@ class SetController extends Controller
         return response()->json($set->load('exercise'), 201);
     }
 
-    /** Show a single set */
     public function show(Set $set)
     {
         return $set;
     }
 
-    /** Update a set */
     public function update(Request $request, Set $set)
     {
 
@@ -63,7 +59,6 @@ class SetController extends Controller
         return $set->fresh()->load('exercise');
     }
 
-    /** Delete a set */
     public function destroy(Set $set)
     {
         $set->delete();
@@ -71,38 +66,59 @@ class SetController extends Controller
         return response()->noContent();
     }
 
-    /** GET /sets/recommendation?exercise_id=… */
-    public function recommendation(Request $request)
-    {
-        $request->validate([
-            'exercise_id' => 'required|exists:exercises,id',
-        ]);
+public function recommendation(Request $request)
+{
+    $request->validate([
+        'exercise_id' => 'required|exists:exercises,id',
+    ]);
 
-        $lastSet = Set::where('user_id', Auth::id())
-                      ->where('exercise_id', $request->exercise_id)
-                      ->latest()
-                      ->first();
+    $userId = Auth::id();
+    $exerciseId = $request->exercise_id;
 
-        if (!$lastSet) {
-            return response()->json([
-                'recommendation' => 'No history yet — start with a moderate weight and good form.'
-            ]);
-        }
+    $sets = Set::where('user_id', $userId)
+               ->where('exercise_id', $exerciseId)
+               ->latest()
+               ->take(3)
+               ->get();
 
-        // --- Simple heuristic ---
-        $rec = 'Maintain current weight. Focus on form.';
-
-        if ($lastSet->reps >= 10 && in_array($lastSet->intensity, ['Easy', 'Moderate'])) {
-            $rec = 'Nice! Try adding +2.5 kg (or the next plate) next session.';
-        } elseif ($lastSet->reps >= 6 && $lastSet->reps <= 8 && $lastSet->intensity === 'Hard') {
-            $rec = 'Solid set. Aim for 9-10 reps before adding weight.';
-        } elseif ($lastSet->reps < 6 || $lastSet->intensity === 'Failure') {
-            $rec = 'Consider dropping the weight a bit to keep good form.';
-        }
-
+    if ($sets->isEmpty()) {
         return response()->json([
-            'last_set'       => $lastSet,
-            'recommendation' => $rec,
+            'recommendation' => 'No recent sets found. Start with a moderate weight and focus on good form. Stay consistent and results will follow.',
         ]);
     }
+
+    $lastSet = $sets->first();
+    $lastWeight = $lastSet->weight;
+
+    $avgReps = $sets->avg('reps');
+    $intensityScore = $sets->map(fn($s) => match ($s->intensity) {
+        'Easy' => 1, 'Moderate' => 2, 'Hard' => 3, 'Failure' => 4,
+    })->avg();
+
+    $weightChange = 0;
+    $motivation = '';
+
+    if ($avgReps >= 10 && $intensityScore <= 2) {
+        $weightChange = 2.5;
+        $motivation = 'You’re progressing well — time to challenge yourself.';
+    } elseif ($avgReps >= 8 && $intensityScore <= 3) {
+        $weightChange = 1.25;
+        $motivation = 'Great consistency. Let’s keep moving forward.';
+    } elseif ($avgReps < 6 || $intensityScore >= 3.5) {
+        $weightChange = -2.5;
+        $motivation = 'Take a step back to focus on form — progress isn’t always linear.';
+    } else {
+        $motivation = 'Keep showing up — strength is built over time.';
+    }
+
+    $rawWeight = $lastWeight + $weightChange;
+    $roundedWeight = round($rawWeight / 2.5) * 2.5;
+    $roundedWeight = max($roundedWeight, 5);
+
+    return response()->json([
+        'recommendation' => "Based on your recent performance, try lifting {$roundedWeight} kg for 8–10 reps in your next session. {$motivation}"
+    ]);
+}
+
+
 }
