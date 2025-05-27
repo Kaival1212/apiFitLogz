@@ -3,90 +3,84 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use App\Models\UserWeight;
 use App\Models\Exercise;
-use App\Models\Set;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Carbon\Carbon;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        // Create test user
         $user = User::factory()->create([
             'name' => 'Kaival Patel',
             'email' => 'kaival225@gmail.com',
             'password' => Hash::make('password'),
-            'height' => '167',
-            'weight' => '86',
-            'age' => '21',
-            'goal' => 'Gain Muscle',
-            'goal_weight' => '88',
+            'height' => 167,
+            'weight' => 86,
+            'age' => 20,
+            'goal' => 'Recomposition',
+            'goal_weight' => 88,
             'activity_level' => 'High',
-            'daily_calories_goal' => '2800',
-            'daily_calories_limit' => '3000',
-            'daily_protein_limit' => '180',
-            'daily_carbs_limit' => '300',
-            'daily_fat_limit' => '90',
-            'daily_sugar_limit' => '50',
-            'daily_steps_goal' => '8000',
+            'daily_calories_goal' => 2800,
+            'daily_calories_limit' => 3000,
+            'daily_protein_limit' => 180,
+            'daily_carbs_limit' => 300,
+            'daily_fat_limit' => 90,
+            'daily_sugar_limit' => 50,
+            'daily_steps_goal' => 8000,
         ]);
 
-        // Weight progression over 90 days
-        for ($i = 90; $i >= 0; $i--) {
-            $progressWeight = 72 + ((90 - $i) * (14 / 90));
-            UserWeight::create([
-                'user_id' => $user->id,
-                'weight' => round($progressWeight + rand(-10, 10) * 0.01, 2),
-                'unit' => 'kg',
-                'created_at' => Carbon::now()->subDays($i),
-                'updated_at' => Carbon::now()->subDays($i),
-            ]);
-        }
+        // Exercises using 'muscle_group' field to store the workout day
+$exercises = [
+    // Monday – Chest + Shoulders
+    ['Barbell Bench Press 3 sets of 10 reps', 'Monday'],
+    ['Incline Dumbbell Press 3 sets of 10 reps', 'Monday'],
+    ['Shoulder Press 3 sets of 12 reps', 'Monday'],
+    ['Lateral Raise 3 sets of 15 reps', 'Monday'],
 
-        $exerciseList = collect([
-            ['Bench Press', 'Chest', 40, 2.5],
-            ['Incline Dumbbell Press', 'Chest', 20, 1.5],
-            ['Deadlift', 'Back', 70, 4],
-            ['Barbell Row', 'Back', 35, 2],
-            ['Lat Pulldown', 'Back', 40, 1.8],
-            ['Shoulder Press', 'Shoulders', 20, 1.5],
-            ['Lateral Raise', 'Shoulders', 6, 0.5],
-            ['Squat', 'Legs', 60, 3.5],
-            ['Leg Press', 'Legs', 100, 5],
-            ['Calf Raises', 'Legs', 40, 2],
-            ['Barbell Curl', 'Arms', 15, 1.2],
-            ['Triceps Pushdown', 'Arms', 20, 1.5],
-        ]);
+    // Tuesday – Quads + Legs
+    ['Back Squat 4 sets of 8 reps', 'Tuesday'],
+    ['Leg Press 4 sets of 10 reps', 'Tuesday'],
+    ['Leg Curl 3 sets of 12 reps', 'Tuesday'],
+    ['Calf Raise 3 sets of 20 reps', 'Tuesday'],
 
-        $startDate = Carbon::now()->subDays(90);
+    // Wednesday – Back + Biceps
+    ['Deadlift 3 sets of 6 reps', 'Wednesday'],
+    ['Barbell Row 3 sets of 10 reps', 'Wednesday'],
+    ['Lat Pulldown 3 sets of 12 reps', 'Wednesday'],
+    ['Face Pull 3 sets of 15 reps', 'Wednesday'],
+    ['Barbell Curl 3 sets of 10 reps', 'Wednesday'],
 
-        $exerciseList->each(function ($item) use ($user, $startDate) {
-            [$name, $group, $startWeight, $increment] = $item;
+    // Thursday – Shoulders + Arms
+    ['Overhead Press 3 sets of 10 reps', 'Thursday'],
+    ['Rear Delt Fly 3 sets of 15 reps', 'Thursday'],
+    ['Hammer Curl 3 sets of 10 reps', 'Thursday'],
+    ['Triceps Pushdown 3 sets of 12 reps', 'Thursday'],
+    ['Overhead Triceps Extension 3 sets of 10 reps', 'Thursday'],
 
-            $exercise = Exercise::create([
+    // Friday – Glutes + Hamstrings
+    ['Romanian Deadlift 5 sets of 10 reps', 'Friday'],
+    ['Bulgarian Split Squat 4 sets of 8 reps', 'Friday'],
+    ['Glute Bridge 3 sets of 12 reps', 'Friday'],
+    ['Leg Curl (Machine) 3 sets of 12 reps', 'Friday'],
+    ['Standing Calf Raise 3 sets of 20 reps', 'Friday'],
+
+    // Saturday – Cardio / Active Recovery
+    ['Treadmill Run 20 mins', 'Saturday'],
+    ['Cycling 30 mins', 'Saturday'],
+    ['Jump Rope 3 rounds of 1 min', 'Saturday'],
+    ['Rowing Machine 15 mins', 'Saturday'],
+    ['HIIT Circuit 4 rounds', 'Saturday'],
+];
+
+
+        foreach ($exercises as [$name, $day]) {
+            Exercise::create([
                 'user_id' => $user->id,
                 'name' => $name,
-                'muscle_group' => $group,
+                'muscle_group' => $day, // Used as a UI sorting filter for workout days
             ]);
-
-for ($i = 0; $i < 9; $i++) {
-    $rawWeight = $startWeight + ($i * $increment);
-
-    $weight = round($rawWeight / 2.5) * 2.5;
-
-    Set::create([
-        'user_id' => $user->id,
-        'exercise_id' => $exercise->id,
-        'weight' => $weight,
-        'reps' => rand(8, 12),
-        'intensity' => $i >= 7 ? 'Hard' : ($i >= 4 ? 'Moderate' : 'Easy'),
-        'created_at' => $startDate->copy()->addDays($i * 10),
-        'updated_at' => $startDate->copy()->addDays($i * 10),
-    ]);
-}
-
-        });
+        }
     }
 }
